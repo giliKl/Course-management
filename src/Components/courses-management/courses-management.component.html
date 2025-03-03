@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Favorite Animal</h2>
+<mat-dialog-content>
+  {{(course$|async)?.title}}:
+  <br>
+  id:{{(course$|async)?.id}}
+  <br>
+  teacherId{{(course$|async)?.teacherId}}
+  <br>
+  description{{(course$|async)?.description}}
+  <br>
+  <ul>
+    @for(l of (lessons$|async);track l.id){
+     <li>{{l.id}}-{{l.title}}</li>     
+    }
+  </ul>
+</mat-dialog-content>
