@@ -1,0 +1,19 @@
+<form [formGroup]="updateForm" (ngSubmit)="updateLesson()">
+    <div class="formGroup">
+        <label for="title">title: </label>
+        <input class="form-control" type="text" name="title" id="title" formControlName="title" >
+    </div>
+    @if(this.updateForm.get('title')?.invalid && updateForm.get('title')?.touched){
+    <small>titleis required</small>
+    }
+    <br>
+    <br>
+    <div class="formGroup">
+        <label for="content">content: </label>
+        <input class="form-control" type="text" name="content" id="content" formControlName="content">
+    </div>
+    @if(this.updateForm.get('content')?.invalid && updateForm.get('content')?.touched){
+    <small>content is required</small>
+    }
+    <button [disabled]="this.updateForm.invalid" type="submit">update</button>
+</form>

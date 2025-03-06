@@ -5,13 +5,14 @@ import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../Services/auth.service';
 import { role } from '../../Models/user';
-import { CoursesManagementComponent } from '../courses-management/courses-management.component';
 import { EditCourseComponent } from '../edit-course/edit-course.component';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
+import { CourseDetailsComponent } from '../course-details/course-details.component';
+
 
 @Component({
   selector: 'app-course-list',
-  imports: [CommonModule, CoursesManagementComponent, EditCourseComponent],
+  imports: [CommonModule, CourseDetailsComponent, EditCourseComponent,RouterOutlet],
   templateUrl: './course-list.component.html',
   styleUrl: './course-list.component.css'
 })
@@ -19,7 +20,6 @@ export class CourseListComponent {
   router = inject(Router);
   courses$: Observable<Course[]>;
   isCourseDitails = false;
-  isEditCourse = false;
   courseId = -1;
   constructor(private courseService: CourseService, private authService: AuthService) {
     this.courses$ = this.courseService.getCourses();
@@ -58,6 +58,7 @@ export class CourseListComponent {
   courseDitails(courseId: number) {
     this.courseId = courseId;
     this.isCourseDitails = !this.isCourseDitails;
+    this.router.navigate(['/course-details', courseId]);
   }
   add(){
     const userId = this.authService.userId;

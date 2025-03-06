@@ -30,8 +30,8 @@ export class CourseService {
   }
 
   // PUT update course by ID (for teachers)
-  // PUT update course by ID (for teachers)
   updateCourse(course: Course): Observable<Course> {
+    console.log("i am here"); 
     return this.http.put<Course>(`${this.apiUrl}/${course.id}`, course);
   }
 

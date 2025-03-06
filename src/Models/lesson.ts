@@ -4,3 +4,4 @@ export class Lesson {
         public content: string,
         public courseId: number) { }
 }
+export type partOfLesson=Partial<Lesson>;

@@ -38,7 +38,7 @@ export class LogInComponent implements OnInit{
             this.authService.saveToken(res.token);
             this.authService.isAuth=true;
             this.authService.role=res.role;
-            this.authService.userId = res.id;
+            this.authService.userId = res.userId;
             alert('Login successful!');
             this.router.navigate(['/']);
           },
