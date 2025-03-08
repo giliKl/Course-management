@@ -1,4 +1,4 @@
-@for(course of courses$ | async ; track course.id){
+<!-- @for(course of courses$ | async ; track course.id){
 {{course.id}} - {{course.title}}
 @if(getAuthRole() == "student"){
 <button (click)="enrollCourse(course)">Enroll</button>
@@ -14,6 +14,62 @@
 
 @if(getAuthRole() == "teacher"){
 <button (click)="add()">Add course</button>
-}
+} -->
 
+<mat-card>
+    <mat-card-header>
+      <mat-card-title>Courses List</mat-card-title>
+    </mat-card-header>
+    <ng-container *ngIf="courses$ | async as courses">
+    <mat-table [dataSource]="courses" matSort>
+  
+        <!-- Column for Course ID -->
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Course ID </mat-header-cell>
+          <mat-cell *matCellDef="let course"> {{course.id}} </mat-cell>
+        </ng-container>
+    
+        <!-- Column for Course Title -->
+        <ng-container matColumnDef="title">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Course Title </mat-header-cell>
+          <mat-cell *matCellDef="let course"> {{course.title}} </mat-cell>
+        </ng-container>
+    
+        <!-- Column for Actions -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+          <mat-cell *matCellDef="let course">
+            <!-- Show different buttons based on the user's role -->
+            <ng-container *ngIf="getAuthRole() == 'student'">
+              <button mat-icon-button (click)="enrollCourse(course)">
+                <mat-icon>how_to_reg</mat-icon>
+              </button>
+            </ng-container>
+    
+            <ng-container *ngIf="getAuthRole() == 'teacher'">
+              <button mat-icon-button (click)="editCourse(course)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="deleteCourse(course.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </ng-container>
+    
+            <button mat-icon-button (click)="courseDitails(course.id)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+    
+        <!-- Footer with Add Course button for teachers -->
+        <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+    
+      </mat-table>
+    </ng-container>
 
+  
+  
+    <ng-container *ngIf="getAuthRole() == 'teacher'">
+      <button mat-raised-button (click)="add()">Add course</button>
+    </ng-container>
+  </mat-card>

@@ -8,21 +8,38 @@ import { role } from '../../Models/user';
 import { EditCourseComponent } from '../edit-course/edit-course.component';
 import { Router, RouterOutlet } from '@angular/router';
 import { CourseDetailsComponent } from '../course-details/course-details.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 
 @Component({
   selector: 'app-course-list',
-  imports: [CommonModule, CourseDetailsComponent, EditCourseComponent,RouterOutlet],
+  imports: [CommonModule, CourseDetailsComponent, EditCourseComponent,RouterOutlet, MatTableModule,
+    MatSortModule,
+    MatButtonModule,
+    MatIconModule,MatCardModule],
   templateUrl: './course-list.component.html',
   styleUrl: './course-list.component.css'
 })
 export class CourseListComponent {
   router = inject(Router);
-  courses$: Observable<Course[]>;
+  courses$: Observable<Course[]>=of([]);
   isCourseDitails = false;
+  displayedColumns: string[] = ['id', 'title', 'actions'];
   courseId = -1;
   constructor(private courseService: CourseService, private authService: AuthService) {
-    this.courses$ = this.courseService.getCourses();
+    this.courses$ = this.courseService.getCourses().pipe(
+      map(courses => courses ? courses : []) // במקרה של null, נחזיר מערך ריק
+    );;
+    if(this.courses$==null){
+      this.courses$=of([]);
+    }
   };
   getAuthRole(): string {
     return this.authService.role;

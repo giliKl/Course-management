@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Course } from '../Models/course';
 
 @Injectable({
@@ -15,7 +15,9 @@ export class CourseService {
 
   // GET all courses
   getCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>(this.apiUrl);
+    return this.http.get<Course[]>(this.apiUrl).pipe(
+      map(courses => courses || [])  // אם ה-API מחזיר null, נחזיר מערך ריק
+    );
     
   }
 

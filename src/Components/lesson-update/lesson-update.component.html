@@ -1,19 +1,33 @@
-<form [formGroup]="updateForm" (ngSubmit)="updateLesson()">
-    <div class="formGroup">
-        <label for="title">title: </label>
-        <input class="form-control" type="text" name="title" id="title" formControlName="title" >
-    </div>
-    @if(this.updateForm.get('title')?.invalid && updateForm.get('title')?.touched){
-    <small>titleis required</small>
-    }
-    <br>
-    <br>
-    <div class="formGroup">
-        <label for="content">content: </label>
-        <input class="form-control" type="text" name="content" id="content" formControlName="content">
-    </div>
-    @if(this.updateForm.get('content')?.invalid && updateForm.get('content')?.touched){
-    <small>content is required</small>
-    }
-    <button [disabled]="this.updateForm.invalid" type="submit">update</button>
-</form>
+<mat-card class="edit-card">
+    <mat-card-title style="color: white; padding: 10px;">Edit Lesson</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="updateForm" (ngSubmit)="updateLesson()" class="edit-form">
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" required />
+          @if(this.updateForm.get('title')?.invalid && updateForm.get('title')?.touched){
+          <mat-error>
+            Title is required
+          </mat-error>
+        }
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Content</mat-label>
+          <textarea matInput formControlName="content" required></textarea>
+          @if(this.updateForm.get('content')?.invalid && updateForm.get('content')?.touched){
+          <mat-error>
+            Content is required
+          </mat-error>
+        }
+        </mat-form-field>
+  
+      </form>
+    </mat-card-content>
+  
+    <mat-card-actions align="end">
+      <!-- <button mat-button (click)="close()">Cancel</button> -->
+      <button mat-raised-button color="primary" [disabled]="updateForm.invalid" (click)="updateLesson()">Update</button>
+    </mat-card-actions>
+  </mat-card>

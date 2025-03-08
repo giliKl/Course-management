@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CourseService } from '../../Services/course.service';
 import { Observable } from 'rxjs';
 import { Course } from '../../Models/course';
@@ -6,7 +6,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CommonModule } from '@angular/common';
 import { Lesson, partOfLesson } from '../../Models/lesson';
 import { LessonService } from '../../Services/lesson.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
 import { LessonUpdateComponent } from "../lesson-update/lesson-update.component";
 import { CardModule } from 'primeng/card';
@@ -21,7 +21,7 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-course-details',
-  imports: [  MatCardModule,
+  imports: [ RouterOutlet, MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatListModule,
@@ -32,6 +32,7 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './course-details.component.css'
 })
 export class CourseDetailsComponent {
+    router = inject(Router);
   courseId = -1;
   IsAdding = false;
   lessonForm!: FormGroup;

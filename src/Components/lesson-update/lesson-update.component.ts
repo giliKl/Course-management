@@ -5,9 +5,21 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { LessonService } from '../../Services/lesson.service';
 import { Lesson } from '../../Models/lesson';
 import { Observable } from 'rxjs';
+import { BrowserModule } from '@angular/platform-browser';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-lesson-update',
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule],
   templateUrl: './lesson-update.component.html',
   styleUrl: './lesson-update.component.css'
 })
