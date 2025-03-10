@@ -8,10 +8,12 @@ import { EditCourseComponent } from '../Components/edit-course/edit-course.compo
 import { AddCourseComponent } from '../Components/add-course/add-course.component';
 import { CourseDetailsComponent } from '../Components/course-details/course-details.component';
 import { LessonUpdateComponent } from '../Components/lesson-update/lesson-update.component';
+import { AboutComponent } from '../Components/about/about.component';
 
 export const routes: Routes = [
     {
         path: '', component: ApplayoutComponent, canActivate: [authGuard], children: [
+            {path:'',component:AboutComponent},
             { path: 'courses', component: CourseListComponent },
             { path: 'course-details/:courseId', component: CourseDetailsComponent, children:[
                 {path:'update-lesson/:lessonId',component:LessonUpdateComponent}]},

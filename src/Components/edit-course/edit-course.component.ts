@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Course } from '../../Models/course';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CourseService } from '../../Services/course.service';
 import { AuthService } from '../../Services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -10,15 +10,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import {MatIconModule} from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 
 @Component({
   selector: 'app-edit-course',
-  imports: [RouterModule,ReactiveFormsModule,MatIconModule, CommonModule, MatListModule, MatFormFieldModule, MatInputModule, MatExpansionModule],
+  imports: [RouterModule,MatButtonModule,MatCardModule,ReactiveFormsModule,MatIconModule, CommonModule, MatListModule, MatFormFieldModule, MatInputModule, MatExpansionModule],
   templateUrl: './edit-course.component.html',
   styleUrl: './edit-course.component.css'
 })
 export class EditCourseComponent {
+  router=inject(Router)
   courseId!: number;
   courseForm!: FormGroup;
   course!: Course
@@ -51,6 +54,7 @@ ngOnInit(): void {
         console.log('Course updated successfully');
       });
       this.coursesService.getCourses();
+      this.router.navigate(['/courses']);
     }
   }
 

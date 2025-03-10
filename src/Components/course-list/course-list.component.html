@@ -1,75 +1,61 @@
-<!-- @for(course of courses$ | async ; track course.id){
-{{course.id}} - {{course.title}}
-@if(getAuthRole() == "student"){
-<button (click)="enrollCourse(course)">Enroll</button>
-}
-@if(getAuthRole() == "teacher"){
-<button (click)="editCourse(course)">Update</button>
-<button (click)="deleteCourse(course.id)">Delete</button>
-}
-<button (click)="courseDitails(course.id)">show details</button>
 
+   @if(getAuthServiceRole() == "teacher") {
+    <button pButton label="Add Course" icon="pi pi-plus" class="icon-button p-button-success add-course-btn" (click)="add()"><i class="pi pi-plus"></i></button>
 }
 
+<div class="card course-table-container">
+    <p-table [value]="courses" [tableStyle]="{'min-width': '60rem'}" [paginator]="true" [rows]="5">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="title">
+                    Course <p-sortIcon field="title"></p-sortIcon>
+                </th>
+                <th>Description</th>
+                @if(getAuthServiceRole() == "student") {
+                    <th>Un/enroll</th>
+                }
+                @if(getAuthServiceRole() == "teacher") {
+                    <th>Edit</th>
+                    <th>Delete</th>
+                }
+                <th>More Details</th>
+            </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-course let-rowIndex="rowIndex">
+            <tr [ngClass]="{ 'even-row': rowIndex % 2 === 0, 'odd-row': rowIndex % 2 !== 0 }">
+                <td>{{ course.title }}</td>
+                <td>{{ course.description }}</td>
 
-@if(getAuthRole() == "teacher"){
-<button (click)="add()">Add course</button>
-} -->
+                @if(getAuthServiceRole() == "student") {
+                    <td>
+                        @if(getAuthServiceRole() == "student" &&!(isEnrolled(course.id) | async)){
+                            <button pButton  label="Enroll" icon="pi pi-user-plus" class="icon-button p-button-rounded p-button-primary" (click)="enroll(course.id)"><i class="pi pi-user-plus"></i></button>
+ 
+                        }
+                        @else {
+                            <button pButton label="Unenroll" icon="pi pi-user-minus" class="icon-button p-button-rounded p-button-warning" (click)="unenroll(course.id)"><i class="pi pi-user-minus"></i></button>
 
-<mat-card>
-    <mat-card-header>
-      <mat-card-title>Courses List</mat-card-title>
-    </mat-card-header>
-    <ng-container *ngIf="courses$ | async as courses">
-    <mat-table [dataSource]="courses" matSort>
-  
-        <!-- Column for Course ID -->
-        <ng-container matColumnDef="id">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Course ID </mat-header-cell>
-          <mat-cell *matCellDef="let course"> {{course.id}} </mat-cell>
-        </ng-container>
-    
-        <!-- Column for Course Title -->
-        <ng-container matColumnDef="title">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Course Title </mat-header-cell>
-          <mat-cell *matCellDef="let course"> {{course.title}} </mat-cell>
-        </ng-container>
-    
-        <!-- Column for Actions -->
-        <ng-container matColumnDef="actions">
-          <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-          <mat-cell *matCellDef="let course">
-            <!-- Show different buttons based on the user's role -->
-            <ng-container *ngIf="getAuthRole() == 'student'">
-              <button mat-icon-button (click)="enrollCourse(course)">
-                <mat-icon>how_to_reg</mat-icon>
-              </button>
-            </ng-container>
-    
-            <ng-container *ngIf="getAuthRole() == 'teacher'">
-              <button mat-icon-button (click)="editCourse(course)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button (click)="deleteCourse(course.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </ng-container>
-    
-            <button mat-icon-button (click)="courseDitails(course.id)">
-              <mat-icon>visibility</mat-icon>
-            </button>
-          </mat-cell>
-        </ng-container>
-    
-        <!-- Footer with Add Course button for teachers -->
-        <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
-    
-      </mat-table>
-    </ng-container>
+                        }
+                    </td>
+                }
 
-  
-  
-    <ng-container *ngIf="getAuthRole() == 'teacher'">
-      <button mat-raised-button (click)="add()">Add course</button>
-    </ng-container>
-  </mat-card>
+                @if(getAuthServiceRole() == "teacher") {
+                    <td>
+                        <button pButton icon="pi pi-pencil" class="icon-button p-button-rounded p-button-info" (click)="update(course)"><i class="pi pi-pencil"></i></button>
+                    </td>
+                    <td>
+                        <button pButton icon="pi pi-trash" class="icon-button p-button-rounded p-button-danger" (click)="deleteCourse(course.id)"><i class="pi pi-trash"></i></button>
+                    </td>
+                }
+
+                <td>
+                    <button pButton icon="pi pi-eye" class="icon-button p-button-rounded p-button-secondary" (click)="showCourse(course.id)"><i class="pi pi-eye"></i></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <a routerLink="/" class="course-card">
+        <mat-icon class="arrow-icon">arrow_back</mat-icon>
+      </a>
+</div>

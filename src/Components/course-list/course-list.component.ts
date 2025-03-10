@@ -4,81 +4,76 @@ import { CourseService } from '../../Services/course.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../Services/auth.service';
-import { role } from '../../Models/user';
-import { EditCourseComponent } from '../edit-course/edit-course.component';
-import { Router, RouterOutlet } from '@angular/router';
-import { CourseDetailsComponent } from '../course-details/course-details.component';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
-import { MatButtonModule } from '@angular/material/button';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { TableModule } from 'primeng/table';
+
 
 
 
 @Component({
   selector: 'app-course-list',
-  imports: [CommonModule, CourseDetailsComponent, EditCourseComponent,RouterOutlet, MatTableModule,
-    MatSortModule,
-    MatButtonModule,
-    MatIconModule,MatCardModule],
+  imports: [CommonModule, TableModule, RouterLink,MatIconModule],
   templateUrl: './course-list.component.html',
   styleUrl: './course-list.component.css'
 })
 export class CourseListComponent {
+  courses!: Course[];
+  studentCourses!: Course[];
   router = inject(Router);
-  courses$: Observable<Course[]>=of([]);
-  isCourseDitails = false;
-  displayedColumns: string[] = ['id', 'title', 'actions'];
-  courseId = -1;
-  constructor(private courseService: CourseService, private authService: AuthService) {
-    this.courses$ = this.courseService.getCourses().pipe(
-      map(courses => courses ? courses : []) // במקרה של null, נחזיר מערך ריק
-    );;
-    if(this.courses$==null){
-      this.courses$=of([]);
-    }
-  };
-  getAuthRole(): string {
-    return this.authService.role;
-  }
-  enrollCourse(course: Course) {
-    this.courseService.enroll(course.id, this.authService.userId).subscribe({
-      next: () => {
-        this.courses$ = this.courseService.getCourses();
-        console.log("enroll successful");
+  
 
-      },
-      error: () => {
-        console.log("enroll failed");
-      }
+  constructor(private coursesService: CourseService, private authService: AuthService) {
+  }
+
+  ngOnInit() {
+    this.coursesService.getCourses();
+    this.coursesService.courses$.subscribe(courses => {
+      this.courses = courses;
+      console.log(this.courses);
     });
   }
-  deleteCourse(courseId: number) {
-    this.courseService.deleteCourse(courseId).subscribe({
-      next: () => {
-        this.courses$ = this.courseService.getCourses();
-        console.log("delete successful");
-
-      },
-      error: () => {
-        console.log("delete failed");
-      }
-    })
+  getAuthServiceRole(): string {
+    return this.authService.role;
   }
-  editCourse(course: Course) {
+
+
+  enroll(courseId: number) {
+    this.coursesService.enroll(courseId, this.authService.userId)
+  }
+
+  unenroll(courseId: number) {
+    this.coursesService.unenroll(courseId, this.authService.userId)
+  
+  }
+
+
+ 
+  isEnrolled(courseId: number): Observable<boolean> {
+    return this.coursesService.isEnrolled(courseId).pipe(
+      map((result) => {
+        console.log(`Is enrolled in course ${courseId}: ${result}`);
+        return result;
+      })
+    );
+  }
+  update(course: Course) {
     this.router.navigate(['/update-course', course.id]);
+  }
+  showCourse(courseid: number) {
+    this.router.navigate(['/course-details', courseid]);
+  }
 
+  deleteCourse(id: number) {
+    this.coursesService.deleteCourse(id)
+    console.log("delete course");
+    
   }
-  courseDitails(courseId: number) {
-    this.courseId = courseId;
-    this.isCourseDitails = !this.isCourseDitails;
-    this.router.navigate(['/course-details', courseId]);
-  }
-  add(){
+
+  add() {
     const userId = this.authService.userId;
     this.router.navigate(['/add-course', userId]);
   }
+
 }

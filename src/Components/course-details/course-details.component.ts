@@ -21,26 +21,26 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-course-details',
-  imports: [ RouterOutlet, MatCardModule,
+  imports: [RouterOutlet, MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatListModule,
     MatFormFieldModule,
-    MatInputModule,FormsModule,RouterModule,
-    CommonModule, ReactiveFormsModule, LessonUpdateComponent,CardModule, ButtonModule],
+    MatInputModule, FormsModule, RouterModule,
+    CommonModule, ReactiveFormsModule, LessonUpdateComponent, CardModule, ButtonModule],
   templateUrl: './course-details.component.html',
   styleUrl: './course-details.component.css'
 })
 export class CourseDetailsComponent {
-    router = inject(Router);
+  router = inject(Router);
   courseId = -1;
   IsAdding = false;
   lessonForm!: FormGroup;
   newlesson: Lesson | undefined;
-  lessonId:number=-1;
-  openUpdate=false;
+  lessonId: number = -1;
+  openUpdate = false;
   course$!: Observable<Course>
-  lessons$!: Observable<Lesson[]>
+  lessons = [] as Lesson[]
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private courseService: CourseService, private lessonService: LessonService, private authService: AuthService) {
     this.lessonForm = this.fb.group({
       title: ['', Validators.required],
@@ -50,7 +50,14 @@ export class CourseDetailsComponent {
   ngOnInit() {
     this.courseId = parseInt(this.route.snapshot.paramMap.get('courseId')?.toString() ?? '');
     this.course$ = this.courseService.getCourse(this.courseId);
-    this.lessons$ = this.lessonService.getLessons(this.courseId);
+    this.getnewlessons()
+  }
+  getnewlessons(){
+    this.lessonService.getLessons(this.courseId);
+    this.lessonService.lessons$.subscribe(lessons => {
+      this.lessons = lessons;
+      console.log(this.lessons);
+    }); 
   }
   getAuthRole(): string {
     return this.authService.role;
@@ -66,7 +73,7 @@ export class CourseDetailsComponent {
         this.lessonService.addLesson(this.courseId.toString(), this.newlesson).subscribe({
           next: res => {
             console.log('Success:', res);
-            this.lessons$ = this.lessonService.getLessons(this.courseId);
+            this.getnewlessons()
           },
           error: err => console.error('Error:', err)
         })
@@ -75,22 +82,23 @@ export class CourseDetailsComponent {
     }
   }
   deleteLesson(lessonId: number) {
-    this.lessonService.deleteLesson(this.courseId.toString(),lessonId.toString()).subscribe({
+    this.lessonService.deleteLesson(this.courseId.toString(), lessonId.toString()).subscribe({
       next: res => {
         console.log('Success:', res);
-        this.lessons$ = this.lessonService.getLessons(this.courseId);
-      },
+        this.getnewlessons() 
+            },
       error: err => console.error('Error:', err)
     })
 
   }
   updateLesson(lessonId: number) {
-    this.lessonId=lessonId
-    this.openUpdate=!this.openUpdate
+    this.lessonId = lessonId
+    this.openUpdate = !this.openUpdate
   }
-  IsupdateLesson(){
+  IsupdateLesson() {
     console.log("hello");
-    this.openUpdate=!this.openUpdate
-    this.lessons$ = this.lessonService.getLessons(this.courseId);
+    this.openUpdate = !this.openUpdate
+    this.getnewlessons()
   }
+ 
 }

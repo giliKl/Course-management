@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Lesson } from '../Models/lesson';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,10 +9,18 @@ import { Observable } from 'rxjs';
 export class LessonService {
   private apiUrl = 'http://localhost:3000/api/courses';
   constructor(private http: HttpClient) { }
+    private lessonsBehaviorSubject = new BehaviorSubject<Lesson[]>([]);
+    public lessons$: Observable<Lesson[]> = this.lessonsBehaviorSubject.asObservable();
 
   // Get all lessons in a course
-  getLessons(courseId: number): Observable<Lesson[]> {
-    return this.http.get<Lesson[]>(`${this.apiUrl}/${courseId}/lessons`);
+  getLessons(courseId: number):void {
+    this.http.get<Lesson[]>(`${this.apiUrl}/${courseId}/lessons`).subscribe(
+          (lessons) => {
+            this.lessonsBehaviorSubject.next(lessons);
+            console.log(this.lessons$);
+          },
+          (error) => alert('Error:' + error.message)
+        );;
   }
 
   getLessonById(courseId: string, lessonId: string): Observable<Lesson> {

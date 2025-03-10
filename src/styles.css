@@ -1,4 +1,39 @@
+
 /* You can add global styles to this file, and also import other style files */
-@import "primeicons/primeicons.css";
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+@import 'primeicons/primeicons.css';
+
+:root {
+    --primary-color:  #161215;  /* צבע ראשי */
+    --text-color: white;      /* צבע טקסט */
+    --error-color: #ED3D48;             /* צבע שגיאות */
+    --border-color: #3d2b3a;   /* צבע מסגרת */
+    --disabled-color: #ecdcff69; /* צבע לכפתור מנוטרל */
+  }
+  
+  body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f5f5f5;
+    /* display: flex ;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center; */
+    height: 100vh;
+  }
+  
+
+  
+  .mat-mdc-card {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+  }
+  
+  .custom-text {
+    color: var(--text-color);
+  }
+  
+  .transparent-box {
+    background-color: var(--background-color);
+    border: 1px solid var(--text-color);
+    padding: 10px;
+    border-radius: 5px;
+  }
